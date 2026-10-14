@@ -63,7 +63,7 @@ student-performance-prediction/
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/Kasanaboina-Kowshik/student-performance-prediction.git
+git clone https://github.com/kowshik-8790/student-performance-prediction.git
 cd student-performance-prediction
 pip install -r requirements.txt
 ```
