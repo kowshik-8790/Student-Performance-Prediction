@@ -1,12 +1,23 @@
 {
-  "accuracy": 91.5,
-  "roc_auc": 95.5,
+  "classification_accuracy": 96.25,
+  "roc_auc_score": 98.89,
+  "regression_r2": 83.73,
+  "features": [
+    "attendance_rate",
+    "weekly_study_hours",
+    "prior_gpa",
+    "assignment_rate",
+    "midterm_score",
+    "sleep_hours",
+    "parental_education"
+  ],
   "feature_importances": {
-    "attendance_rate": 0.2294,
-    "weekly_study_hours": 0.4783,
-    "prior_gpa": 0.1249,
-    "assignment_completion_rate": 0.056,
-    "midterm_score": 0.06,
-    "daily_sleep_hours": 0.0514
+    "attendance_rate": 0.8321,
+    "weekly_study_hours": 0.0494,
+    "prior_gpa": 0.0288,
+    "assignment_rate": 0.0252,
+    "midterm_score": 0.0345,
+    "sleep_hours": 0.0217,
+    "parental_education": 0.0084
   }
 }
