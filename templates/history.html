@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Prediction History Log • SQLite Database{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="header-badge">SQLITE DATABASE LOGS</div>
+  <h1>Historical Student Evaluations</h1>
+  <p class="lead">Audit trail of all real-time single and batch student performance predictions stored in <code>student_records.db</code>.</p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">
+      <span class="card-icon">🗄️</span>
+      <h3>Stored Evaluation Records</h3>
+    </div>
+    <span class="badge badge-neutral">{{ records|length }} Records Displayed</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Full Name</th>
+          <th>Attendance</th>
+          <th>Study Hrs/Wk</th>
+          <th>Previous Marks</th>
+          <th>Predicted Marks</th>
+          <th>Grade</th>
+          <th>Status</th>
+          <th>Anomaly Flag</th>
+          <th>Evaluation Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+          <tr>
+            <td><code>{{ r.student_id }}</code></td>
+            <td><strong>{{ r.full_name }}</strong></td>
+            <td>{{ r.attendance_rate }}%</td>
+            <td>{{ r.study_hours_per_week }} hrs</td>
+            <td>{{ r.previous_score }}</td>
+            <td><strong>{{ r.predicted_score }}</strong></td>
+            <td><span class="grade-badge grade-{{ r.predicted_grade }} sm">{{ r.predicted_grade }}</span></td>
+            <td>
+              <span class="status-badge {% if r.predicted_status == 'Passing' %}status-pass{% else %}status-risk{% endif %} sm">
+                {{ r.predicted_status }}
+              </span>
+            </td>
+            <td>
+              {% if r.is_anomaly == 1 %}
+                <span class="badge badge-danger" title="{{ r.anomaly_reason }}">⚠️ Anomaly</span>
+              {% else %}
+                <span class="badge badge-success">Normal</span>
+              {% endif %}
+            </td>
+            <td><small class="text-muted">{{ r.created_at }}</small></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="10" class="text-center">No predictions recorded yet. Run a prediction from the home page.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

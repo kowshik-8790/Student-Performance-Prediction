@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Batch CSV Student Evaluation{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="header-badge">BULK EVALUATION PIPELINE</div>
+  <h1>Batch Student Evaluation via CSV</h1>
+  <p class="lead">Upload an entire classroom or cohort CSV dataset to generate predictions, calculate risk statuses, and persist records to SQLite automatically.</p>
+</div>
+
+<div class="grid-2-col">
+  <!-- Upload Form -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="card-icon">📤</span>
+        <h3>Upload Student Cohort CSV</h3>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('batch') }}" enctype="multipart/form-data" class="upload-form">
+      <div class="file-upload-dropzone">
+        <span class="dropzone-icon">📄</span>
+        <label for="csv_file" class="file-label">Choose CSV File</label>
+        <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+        <span class="file-name" id="fileName">No file selected</span>
+        <p class="sub">Accepts CSV files containing attendance, study hours, and previous scores.</p>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">
+        🚀 Run Cohort Batch Evaluation
+      </button>
+    </form>
+
+    <div class="template-download-box">
+      <strong>Need a test file?</strong>
+      <p>A sample batch file is included in your project at <code>data/sample_batch_test.csv</code> ready to upload!</p>
+    </div>
+  </div>
+
+  <!-- Information Card -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="card-icon">ℹ️</span>
+        <h3>Expected CSV Column Schema</h3>
+      </div>
+    </div>
+    <div class="schema-info">
+      <p>The batch pipeline processes the following fields (missing optional fields will be automatically imputed):</p>
+      <ul class="schema-list">
+        <li><code>student_id</code> <em>(Optional, string)</em></li>
+        <li><code>full_name</code> <em>(Optional, string)</em></li>
+        <li><code>attendance_rate</code> <strong>(Required, 0-100)</strong></li>
+        <li><code>study_hours_per_week</code> <strong>(Required, 1-35)</strong></li>
+        <li><code>previous_score</code> <strong>(Required, 0-100)</strong></li>
+        <li><code>tutoring_sessions</code> <em>(Optional, 0-12)</em></li>
+        <li><code>sleep_hours</code> <em>(Optional, 4-10)</em></li>
+        <li><code>parental_education</code> <em>(Optional, Bachelor, High School, etc.)</em></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% if results %}
+  <div class="card mt-4">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="card-icon">📋</span>
+        <h3>Batch Prediction Results ({{ results|length }} Students Processed)</h3>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Attendance</th>
+            <th>Study Hours</th>
+            <th>Previous Marks</th>
+            <th>Predicted Score</th>
+            <th>Grade</th>
+            <th>Status</th>
+            <th>Anomaly Flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+            <tr>
+              <td><code>{{ r.student_id }}</code></td>
+              <td><strong>{{ r.full_name }}</strong></td>
+              <td>{{ r.attendance_rate }}%</td>
+              <td>{{ r.study_hours_per_week }} hrs</td>
+              <td>{{ r.previous_score }}</td>
+              <td><strong>{{ r.predicted_score }}</strong></td>
+              <td><span class="grade-badge grade-{{ r.predicted_grade }} sm">{{ r.predicted_grade }}</span></td>
+              <td>
+                <span class="status-badge {% if r.predicted_status == 'Passing' %}status-pass{% else %}status-risk{% endif %} sm">
+                  {{ r.predicted_status }}
+                </span>
+              </td>
+              <td>
+                {% if r.is_anomaly == 1 %}
+                  <span class="badge badge-danger">⚠️ {{ r.anomaly_reason }}</span>
+                {% else %}
+                  <span class="badge badge-success">Normal</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

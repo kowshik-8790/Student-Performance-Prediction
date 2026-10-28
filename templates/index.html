@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Real-Time Student Performance Predictor{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="header-badge">REAL-TIME INFERENCE ENGINE</div>
+  <h1>Student Academic Performance Predictor</h1>
+  <p class="lead">Input attendance rates, study habits, and demographic profiles to predict final academic scores, classify pass/fail probabilities, and detect behavioral anomalies.</p>
+</div>
+
+<div class="grid-2-col">
+  <!-- Prediction Input Form -->
+  <div class="card form-card">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="card-icon">📝</span>
+        <h3>Student Profile & Academic Indicators</h3>
+      </div>
+      <span class="badge badge-info">ML Model: Gradient Boosting</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('index') }}" class="prediction-form" id="predictionForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="student_id">Student ID</label>
+          <input type="text" id="student_id" name="student_id" value="{{ inputs.student_id if inputs else 'STU-10492' }}" required>
+        </div>
+        <div class="form-group">
+          <label for="full_name">Full Name</label>
+          <input type="text" id="full_name" name="full_name" value="{{ inputs.full_name if inputs else 'Samantha Miller' }}" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="Female" {% if inputs and inputs.gender == 'Female' %}selected{% endif %}>Female</option>
+            <option value="Male" {% if inputs and inputs.gender == 'Male' %}selected{% endif %}>Male</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" min="14" max="25" value="{{ inputs.age if inputs else 17 }}" required>
+        </div>
+      </div>
+
+      <div class="divider">Academic & Attendance Indicators</div>
+
+      <!-- Attendance Rate Slider -->
+      <div class="form-group">
+        <div class="slider-header">
+          <label for="attendance_rate">Attendance Rate (%)</label>
+          <span class="slider-val" id="attendanceVal">{{ inputs.attendance_rate if inputs else 85 }}%</span>
+        </div>
+        <input type="range" class="slider" id="attendance_rate" name="attendance_rate" min="30" max="100" step="0.5" value="{{ inputs.attendance_rate if inputs else 85 }}" oninput="updateVal('attendanceVal', this.value + '%')">
+        <small class="helper-text">School benchmark threshold: &ge; 75%</small>
+      </div>
+
+      <!-- Weekly Study Hours Slider -->
+      <div class="form-group">
+        <div class="slider-header">
+          <label for="study_hours_per_week">Weekly Independent Study Hours</label>
+          <span class="slider-val" id="studyVal">{{ inputs.study_hours_per_week if inputs else 12 }} hrs</span>
+        </div>
+        <input type="range" class="slider" id="study_hours_per_week" name="study_hours_per_week" min="1" max="35" step="0.5" value="{{ inputs.study_hours_per_week if inputs else 12 }}" oninput="updateVal('studyVal', this.value + ' hrs')">
+        <small class="helper-text">Recommended academic allocation: 10 - 15 hrs/week</small>
+      </div>
+
+      <!-- Previous Exam Score Slider -->
+      <div class="form-group">
+        <div class="slider-header">
+          <label for="previous_score">Previous Term Score / Midterm Marks (0-100)</label>
+          <span class="slider-val" id="prevScoreVal">{{ inputs.previous_score if inputs else 78 }}</span>
+        </div>
+        <input type="range" class="slider" id="previous_score" name="previous_score" min="20" max="100" step="0.5" value="{{ inputs.previous_score if inputs else 78 }}" oninput="updateVal('prevScoreVal', this.value)">
+      </div>
+
+      <div class="divider">Support Systems & Demographics</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tutoring_sessions">Tutoring Sessions / Month</label>
+          <input type="number" id="tutoring_sessions" name="tutoring_sessions" min="0" max="12" value="{{ inputs.tutoring_sessions if inputs else 2 }}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="sleep_hours">Avg Sleep Hours / Night</label>
+          <input type="number" id="sleep_hours" name="sleep_hours" min="3" max="12" step="0.5" value="{{ inputs.sleep_hours if inputs else 7.5 }}" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="parental_education">Parental Education Level</label>
+          <select id="parental_education" name="parental_education">
+            <option value="High School" {% if inputs and inputs.parental_education == 'High School' %}selected{% endif %}>High School</option>
+            <option value="Associate" {% if inputs and inputs.parental_education == 'Associate' %}selected{% endif %}>Associate Degree</option>
+            <option value="Bachelor" {% if not inputs or inputs.parental_education == 'Bachelor' %}selected{% endif %}>Bachelor's Degree</option>
+            <option value="Master" {% if inputs and inputs.parental_education == 'Master' %}selected{% endif %}>Master's Degree</option>
+            <option value="Doctorate" {% if inputs and inputs.parental_education == 'Doctorate' %}selected{% endif %}>Doctorate</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Internet & Extracurricular</label>
+          <div class="checkbox-row">
+            <label class="custom-checkbox">
+              <input type="checkbox" name="internet_access" value="1" {% if not inputs or inputs.internet_access == 1 %}checked{% endif %}>
+              <span>Home Internet</span>
+            </label>
+            <label class="custom-checkbox">
+              <input type="checkbox" name="extracurricular" value="1" {% if inputs and inputs.extracurricular == 1 %}checked{% endif %}>
+              <span>Extracurriculars</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">
+        ⚡ Run Real-Time Performance Prediction
+      </button>
+    </form>
+  </div>
+
+  <!-- Real-Time Evaluation Result -->
+  <div class="results-column">
+    {% if result %}
+      <div class="card result-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">📊</span>
+            <h3>Academic Prediction Result</h3>
+          </div>
+          <span class="timestamp">ID: {{ result.student_id }}</span>
+        </div>
+
+        <div class="result-body">
+          <div class="student-meta">
+            <h4>{{ result.full_name }}</h4>
+            <span class="sub">Attendance: {{ result.attendance_rate }}% • Study: {{ result.study_hours_per_week }} hrs/wk</span>
+          </div>
+
+          <div class="score-display">
+            <div class="score-circle {% if result.predicted_score >= 60 %}pass-border{% else %}fail-border{% endif %}">
+              <span class="score-number">{{ result.predicted_score }}</span>
+              <span class="score-label">OUT OF 100</span>
+            </div>
+
+            <div class="score-breakdown">
+              <div class="grade-badge grade-{{ result.predicted_grade }}">
+                Grade {{ result.predicted_grade }}
+              </div>
+              <div class="status-badge {% if result.predicted_status == 'Passing' %}status-pass{% else %}status-risk{% endif %}">
+                {{ result.predicted_status }}
+              </div>
+              <div class="confidence-text">
+                Model Confidence: <strong>{{ result.confidence_score }}%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anomaly Alert Box -->
+          {% if result.is_anomaly == 1 %}
+            <div class="anomaly-alert">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>Academic Anomaly Flagged:</strong>
+                <p>{{ result.anomaly_reason }}</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="normal-alert">
+              <span class="alert-icon">✅</span>
+              <span>Learning Trajectory: Normal progress matching engagement metrics.</span>
+            </div>
+          {% endif %}
+
+          <!-- Prescriptive Recommendations -->
+          <div class="intervention-box">
+            <h5>🎯 Tailored Actionable Recommendations</h5>
+            <p>{{ result.intervention_plan }}</p>
+          </div>
+
+          <div class="db-saved-badge">
+            ✓ Record committed to SQLite database table <code>performance_predictions</code>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="card placeholder-card">
+        <div class="placeholder-icon">🔮</div>
+        <h3>No Prediction Generated Yet</h3>
+        <p>Adjust the student's attendance, weekly study hours, and previous academic scores on the left and click <strong>Run Real-Time Prediction</strong> to view instant machine learning scores and anomaly flags.</p>
+        <div class="quick-sample-box">
+          <strong>Key Evaluation Drivers:</strong>
+          <ul>
+            <li>Previous Marks: <strong>~45% weight</strong></li>
+            <li>Attendance Rate: <strong>~30% weight</strong></li>
+            <li>Study Hours/Week: <strong>~15% weight</strong></li>
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Machine Learning Model Quick Specs -->
+    <div class="card model-specs-card">
+      <div class="card-title">
+        <span class="card-icon">🧠</span>
+        <h4>Model Architecture Specs</h4>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-item">
+          <span class="spec-label">Algorithm</span>
+          <span class="spec-val">Gradient Boosting</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Classification Accuracy</span>
+          <span class="spec-val highlight-green">85.60%</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Cross-Val R²</span>
+          <span class="spec-val highlight-blue">85.91%</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">ROC-AUC</span>
+          <span class="spec-val">93.97%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

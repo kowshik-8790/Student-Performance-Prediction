@@ -1,0 +1,9 @@
+{
+  "python.defaultInterpreterPath": "python",
+  "python.analysis.autoImportCompletions": true,
+  "files.associations": {
+    "*.html": "html",
+    "*.css": "css",
+    "*.sql": "sql"
+  }
+}

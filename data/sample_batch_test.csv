@@ -1,0 +1,26 @@
+student_id,full_name,attendance_rate,study_hours_per_week,previous_score,tutoring_sessions,sleep_hours,extracurricular,parental_education,internet_access
+STU-11448,Dakota Davis,71.7,5.6,38.3,1,7.9,0,Associate,1
+STU-11115,Alex Williams,83.0,7.5,46.2,3,5.9,1,Bachelor,1
+STU-11065,Kendall Thomas,57.5,1.1,30.0,4,4.4,0,Associate,1
+STU-12288,Riley Williams,68.2,6.0,41.5,0,5.0,1,High School,1
+STU-11538,Peyton Lopez,80.0,5.5,47.3,2,8.5,0,Bachelor,1
+STU-10669,Quinn Gonzalez,81.5,4.1,44.0,2,6.8,0,High School,1
+STU-11584,Dakota Hernandez,54.1,4.8,30.0,2,9.0,1,Associate,1
+STU-12405,Peyton Johnson,66.3,17.1,42.9,1,6.6,1,Associate,1
+STU-10498,Quinn Garcia,62.7,14.0,47.0,0,6.7,0,High School,1
+STU-12481,Rowan Wilson,70.5,8.8,42.4,0,7.9,0,Master,1
+STU-10472,Harper Anderson,77.0,9.1,54.3,0,6.7,0,Associate,1
+STU-10247,Jamie Rodriguez,85.5,5.9,50.1,1,7.2,0,High School,1
+STU-10924,Sam Jackson,87.3,7.9,54.2,2,6.8,0,Bachelor,1
+STU-11132,Jamie Garcia,79.9,4.6,31.0,1,7.3,0,Associate,1
+STU-10671,Reese Hernandez,77.9,11.3,44.9,1,8.1,1,Associate,0
+STU-10917,Rowan Smith,86.8,12.6,57.6,2,5.3,1,Bachelor,0
+STU-11415,Avery Smith,92.6,11.2,50.0,2,6.5,0,Bachelor,1
+STU-11607,Kendall Brown,76.7,2.0,30.0,1,6.8,0,Bachelor,1
+STU-10403,Casey Thomas,87.5,9.9,59.4,1,8.2,0,Bachelor,1
+STU-11104,Avery Davis,73.0,4.4,38.1,1,6.7,0,High School,1
+STU-12073,Logan Jackson,80.3,3.3,37.0,2,7.3,0,High School,1
+STU-10720,Jordan Williams,86.7,9.6,54.4,0,6.0,1,Bachelor,1
+STU-12012,Logan Anderson,91.5,9.6,40.6,2,5.5,1,Bachelor,1
+STU-12437,River Garcia,74.0,7.1,30.2,0,6.3,0,Associate,1
+STU-10197,Sam Moore,59.9,5.4,38.4,3,6.2,0,Associate,1

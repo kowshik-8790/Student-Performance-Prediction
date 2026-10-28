@@ -1,0 +1,31 @@
+{
+  "regression": {
+    "r2_score": 84.53,
+    "cv_r2_mean": 85.91,
+    "mae": 3.58,
+    "rmse": 4.39
+  },
+  "classification": {
+    "accuracy": 85.6,
+    "precision": 85.71,
+    "recall": 87.02,
+    "f1_score": 86.36,
+    "roc_auc": 93.97
+  },
+  "feature_importances": {
+    "previous_score": 63.89,
+    "study_hours_per_week": 18.31,
+    "attendance_rate": 8.83,
+    "sleep_hours": 2.8,
+    "tutoring_sessions": 2.07,
+    "parental_education_High School": 1.76,
+    "parental_education_Master": 0.59,
+    "parental_education_Associate": 0.58,
+    "parental_education_Doctorate": 0.55,
+    "extracurricular": 0.38,
+    "internet_access": 0.13,
+    "parental_education_Bachelor": 0.11
+  },
+  "sample_size": 2500,
+  "test_size": 500
+}
